@@ -1,0 +1,5 @@
+print("==========================================")
+print("Cognitive Agentic AI Digital Twin")
+print("Smart Cities Research Project")
+print("Repository initialized successfully.")
+print("==========================================")
