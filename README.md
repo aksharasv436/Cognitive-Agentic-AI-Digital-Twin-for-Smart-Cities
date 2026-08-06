@@ -1,44 +1,76 @@
-# Cognitive Agentic AI Digital Twin for Smart Cities — Data Layer
+# 🏙️ Cognitive Agentic AI Digital Twin for Smart Cities
 
-Companion repository for the DA1 report (`DA1_Report.pdf`). This repo contains
-dataset-loading code for the four data modalities used by the proposed
-architecture (see Figure 2 of the report):
+This repository accompanies the **DA1 submission** for the project **Cognitive Agentic AI Digital Twin for Smart Cities**. It contains the dataset-loading pipeline and project structure required for the first development milestone.
 
-| Script | Modality | Dataset(s) |
-|---|---|---|
-| `data/load_traffic.py` | IoT / traffic time series | METR-LA, PeMS-Bay |
-| `data/load_flood.py` | Rainfall–inundation time series | Public rainfall-runoff CSVs, with a synthetic fallback generator |
-| `data/load_video.py` | CCTV / video anomaly | UCF-Crime, ShanghaiTech (manual download required — see script) |
-| `data/load_kg.py` | Urban knowledge graph | OpenStreetMap, via `osmnx` |
+---
 
-## Status
+## 📌 Project Overview
 
-This is the **DA1 milestone**: each script loads/previews its dataset and
-returns a standard object (pandas DataFrame, PyG `Data`, or an RDF graph) so
-that later milestones (DA2/DA3) can plug in model training directly. No model
-training code lives here yet — see the report's §4.4 "Planned experimental
-setup" for what's next.
+The proposed system integrates multiple urban data sources to support intelligent decision-making in smart cities. The project focuses on four major data modalities:
 
-## Setup
+| Script | Data Modality | Dataset |
+|---------|---------------|---------|
+| `data/load_traffic.py` | Traffic / IoT Time Series | METR-LA, PeMS-Bay |
+| `data/load_flood.py` | Rainfall & Flood Data | Public rainfall datasets + synthetic fallback |
+| `data/load_video.py` | CCTV Video Analytics | UCF-Crime, ShanghaiTech |
+| `data/load_kg.py` | Urban Knowledge Graph | OpenStreetMap |
+
+---
+
+## 📂 Repository Structure
+
+```
+Cognitive-Agentic-AI-Digital-Twin-for-Smart-Cities/
+│
+├── data/
+├── docs/
+├── notebooks/
+├── models/
+├── preprocessing/
+├── evaluation/
+├── README.md
+├── requirements.txt
+└── main.py
+```
+
+---
+
+## 🚀 Current Progress (DA1)
+
+- ✅ Literature Survey Completed
+- ✅ Problem Identification
+- ✅ Proposed System Architecture
+- ✅ Dataset Identification
+- ✅ Dataset Loading Modules
+- ⏳ Model Development (DA2)
+- ⏳ Training & Evaluation (DA3)
+
+---
+
+## ⚙️ Installation
 
 ```bash
-python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Some scripts need extra one-time setup (API keys, manual downloads, large
-file pulls). Each script's docstring says exactly what's required and prints
-a clear error if a prerequisite is missing — it will not silently fail.
+---
 
-## Repo layout
+## 📄 Documentation
 
-```
-data/            # one loader script per modality, runnable standalone
-notebooks/       # exploratory notebooks (empty for now — add as you go)
-docs/            # architecture diagrams copied from the DA1 report
-requirements.txt
-```
+The `docs/` folder contains:
 
-## Team
+- DA1 Report
+- Block Diagram
+- Detailed Model Architecture
 
-See the Contribution Matrix in §6 of `DA1_Report.pdf`.
+---
+
+## 👩‍💻 Author
+
+**Akshara SV**
+**SWETHA DIVI**
+**RAHUL VISWANATHAN**
+
+B.Tech Computer Science and Engineering (AI & Robotics)
+
+Vellore Institute of Technology
