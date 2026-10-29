@@ -1,8 +1,24 @@
+# Environment variables
 .env
 .env.*
 !.env.example
+
+# Python virtual environments
 .venv/
 venv/
+
+# Python cache
 __pycache__/
+*.pyc
+*.pyo
+*.pyd
 *.py[cod]
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Cache directories
+cache/
+
+# OS files
 .DS_Store
