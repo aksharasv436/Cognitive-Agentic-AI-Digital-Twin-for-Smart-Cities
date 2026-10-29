@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart City Multi-Model Digital Twin — Control Center</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Smart City Digital Twin</h1>
+        <div class="header-controls">
+            <div class="header-tag" id="sim-clock">Day 1 08:00</div>
+            <div class="header-tag">3-Engine Multi-Model Risk Analytics</div>
+            <div class="ws-badge ws-disconnected" id="ws-status">WS Disconnected</div>
+        </div>
+    </header>
+
+    <div class="metrics-bar">
+        <div class="metric-card">
+            <div class="metric-val" id="stat-scans">0</div>
+            <div class="metric-lbl">Total Scans</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-val" id="stat-anomalies">0</div>
+            <div class="metric-lbl">Anomalies Detected</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-val" id="stat-rate">0.0%</div>
+            <div class="metric-lbl">Hazard Rate</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-val" id="stat-risk">N/A</div>
+            <div class="metric-lbl">Highest Risk Sector</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-val" id="stat-incidents" style="color: var(--status-critical);">0</div>
+            <div class="metric-lbl">Open Incidents</div>
+        </div>
+    </div>
+
+    <div class="sim-bar">
+        <span class="sim-label">Simulation</span>
+        <button class="chip" id="btn-pause" onclick="toggleSim()">Pause</button>
+        <select id="sim-speed" onchange="setSpeed(this.value)">
+            <option value="0.5">0.5×</option>
+            <option value="1" selected>1×</option>
+            <option value="2">2×</option>
+            <option value="5">5×</option>
+            <option value="10">10×</option>
+        </select>
+        <span class="sim-label">Scenarios (local ones use Target Sector)</span>
+        <button class="chip warn" onclick="runScenario('heatwave')">Heatwave</button>
+        <button class="chip warn" onclick="runScenario('accident')">Major Accident</button>
+        <button class="chip warn" onclick="runScenario('stadium_event')">Stadium Event</button>
+        <button class="chip warn" onclick="runScenario('power_outage')">Power Outage</button>
+        <button class="chip warn" onclick="runScenario('wildfire_smoke')">Wildfire Smoke</button>
+        <button class="chip" onclick="runScenario('clear')">Clear all</button>
+        <span class="sim-label" id="sim-active"></span>
+    </div>
+
+    <div class="map-container-box">
+        <div class="map-title">Geospatial Sector Telemetry Grid (Live Map)</div>
+        <div id="map" style="height: 340px; width: 100%; border-radius: 6px;"></div>
+    </div>
+    <div class="main-layout">
+        <div class="grid-container" id="grid"></div>
+
+        <div class="sidebar">
+            <div class="panel-box">
+                <h3>Multi-Hazard Stress Test Sandbox</h3>
+                <div class="slider-group">
+                    <label for="val-sector">Target Sector:
+                        <select id="val-sector">
+                            <option value="Sector_A1">Sector A1</option>
+                            <option value="Sector_A2">Sector A2</option>
+                            <option value="Sector_B1">Sector B1</option>
+                            <option value="Sector_B2">Sector B2</option>
+                            <option value="Sector_C1">Sector C1</option>
+                            <option value="Sector_C2">Sector C2</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="slider-group">
+                    <label for="input-temp">Temperature (°C): <span id="val-temp">30</span></label>
+                    <input type="range" id="input-temp" min="15" max="50" value="30" oninput="updateSliders()">
+                </div>
+                <div class="slider-group">
+                    <label for="input-occ">Occupancy (People): <span id="val-occ">200</span></label>
+                    <input type="range" id="input-occ" min="10" max="600" value="200" oninput="updateSliders()">
+                </div>
+                <div class="slider-group">
+                    <label for="input-traffic">Traffic Density (%): <div><span id="val-traffic">45</span>%</div></label>
+                    <input type="range" id="input-traffic" min="0" max="100" value="45" oninput="updateSliders()">
+                </div>
+                <div class="slider-group">
+                    <label for="input-aqi">AQI Index: <span id="val-aqi">85</span></label>
+                    <input type="range" id="input-aqi" min="10" max="380" value="85" oninput="updateSliders()">
+                </div>
+                <div class="slider-group">
+                    <label for="input-hour">Hour of Day: <div><span id="val-hour">14</span> : 00</div></label>
+                    <input type="range" id="input-hour" min="0" max="23" value="14" oninput="updateSliders()">
+                </div>
+                <button class="primary-btn whatif-btn" onclick="runWhatIf()">Run What-If (no side effects)</button>
+                <button class="primary-btn" onclick="injectManualTelemetry()">Inject Multi-Model Telemetry</button>
+                <div id="whatif-result"></div>
+            </div>
+
+            <div class="panel-box">
+                <h3>Active Emergency Incidents</h3>
+                <div id="incidents-container">
+                    <div style="font-size:0.75rem; color:var(--text-muted);">No open critical incidents.</div>
+                </div>
+            </div>
+
+            <div class="panel-box">
+                <h3>Sub-Model Feature Importances</h3>
+                <div id="importance-list">Loading model diagnostics...</div>
+            </div>
+
+            <div class="panel-box">
+                <h3>Live Multi-Hazard Feed</h3>
+                <div class="log-box" id="logs"><div>&gt; Digital Twin Control Center Ready...</div></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="history-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h3 id="modal-title" style="margin-top:0; color:var(--accent-blue);">Sector Telemetry Logs</h3>
+            <div id="modal-body" style="font-family:'JetBrains Mono', monospace; font-size:0.75rem;">Loading history...
+            </div>
+        </div>
+    </div>
+    <div id="toasts"></div>
+    <script src="scripts.js"></script>
+</body>
+
+</html>
